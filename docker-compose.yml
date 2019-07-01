@@ -1,0 +1,36 @@
+version: "3.4"
+
+networks:
+  farmapi-net:
+    driver: bridge
+
+services:
+  api:
+    image: farmapi:latest
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    environment:
+      CONNECTION_STRING: "host=db;port=5432;database=store;username=apiuser;password=apipass"
+    networks:
+      - farmapi-net
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - dbvolume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "apiuser"
+      POSTGRES_PASSWORD: "apipass"
+      POSTGRES_DB: "store"
+    networks:
+      - farmapi-net
+volumes:
+  dbvolume:
