@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using farmapi.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace farmapi.Context {
-    public class FarmApiContext : DbContext {
-        public FarmApiContext (DbContextOptions<FarmApiContext> options) : base (options) { }
+namespace farmapi.Context
+{
+    public class FarmApiContext : DbContext
+    {
+        public FarmApiContext(DbContextOptions<FarmApiContext> options) : base(options) { }
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
     }

@@ -1,5 +1,7 @@
-namespace farmapi.Services {
-    public interface IProductService {
+namespace farmapi.Services
+{
+    public interface IProductService
+    {
 
     }
 }
