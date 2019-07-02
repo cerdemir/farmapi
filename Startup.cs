@@ -29,7 +29,14 @@ namespace farmapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(opt =>
+            {
+                opt.Filters.Add(typeof(Filters.ModelValidateActionFilter));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.Configure<ApiBehaviorOptions>(opt =>
+            {
+                opt.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddLogging();
 

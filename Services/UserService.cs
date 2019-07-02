@@ -53,7 +53,15 @@ namespace farmapi.Services
 
         public User Register(UserRegisterModel registermodel)
         {
-            return new User();
+            var user = new User()
+            {
+                Name = registermodel.Name,
+                Username = registermodel.Username,
+                Password = registermodel.Password
+            };
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return user;
         }
 
         private User GetUser(string username, string password)
