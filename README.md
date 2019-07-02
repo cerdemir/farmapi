@@ -8,6 +8,7 @@ Exception handling `ExceptionHandlerMiddleware` ile middleware seviyesinde yapil
 
 Model validation action filter ile yapiliyor `ModelValidateActionFilter`
 
+Uygulama ayarlari `environment variable` da tutuluyor. Docker harici calistirilabilmesi icin ayarlar ayrica `appsettings` de tutuluyor.
 
 API ve db beraber docker ile calistirmak icin
 
