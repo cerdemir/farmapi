@@ -33,6 +33,7 @@ namespace farmapi
             {
                 opt.Filters.Add(typeof(Filters.ModelValidateActionFilter));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.Configure<ApiBehaviorOptions>(opt =>
             {
                 opt.SuppressModelStateInvalidFilter = true;
@@ -99,7 +100,7 @@ namespace farmapi
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
-
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
