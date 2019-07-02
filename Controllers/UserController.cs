@@ -21,21 +21,21 @@ namespace farmapi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserAuthModel usermodel)
+        public ActionResult<ApiResponseModel<UserAuthResultModel>> Authenticate([FromBody] UserAuthModel usermodel)
         {
             var authResult = _userService.Authenticate(usermodel.Username, usermodel.Password);
 
             if (!authResult.Authenticated)
             {
-                return BadRequest(authResult);
+                return BadRequest(new ApiResponseModel<UserAuthResultModel> { Success = false, Data = authResult });
             }
 
-            return Ok(authResult);
+            return Ok(new ApiResponseModel<UserAuthResultModel> { Data = authResult });
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult RegisterUser([FromBody] UserRegisterModel registermodel)
+        public ActionResult<ApiResponseModel<Entities.User>> RegisterUser([FromBody] UserRegisterModel registermodel)
         {
             var user = _userService.Register(registermodel);
 
