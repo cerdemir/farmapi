@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using farmapi.Context;
@@ -9,9 +10,10 @@ using farmapi.Context;
 namespace farmapi.Migrations
 {
     [DbContext(typeof(FarmApiContext))]
-    partial class FarmApiContextModelSnapshot : ModelSnapshot
+    [Migration("20190702140705_productPrıce")]
+    partial class productPrıce
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
