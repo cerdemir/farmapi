@@ -4,6 +4,7 @@ namespace farmapi.Services
 {
     public interface IUserService
     {
-        AuthResultModel Authenticate(string username, string password);
+        UserAuthResultModel Authenticate(string username, string password);
+        Entities.User Register(UserRegisterModel registermodel);
     }
 }

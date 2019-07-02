@@ -21,12 +21,12 @@ namespace farmapi.Services
             _context = context;
             _configuration = configuration;
         }
-        public AuthResultModel Authenticate(string username, string password)
+        public UserAuthResultModel Authenticate(string username, string password)
         {
             var user = GetUser(username, password);
             if (user == null)
             {
-                return new AuthResultModel { Authenticated = false };
+                return new UserAuthResultModel { Authenticated = false };
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? _configuration.GetConnectionString("SECRET_KEY");;
@@ -42,13 +42,18 @@ namespace farmapi.Services
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new AuthResultModel()
+            return new UserAuthResultModel()
             {
                 Id = user.Id,
                     Username = user.Username,
                     Token = tokenHandler.WriteToken(token),
                     Authenticated = true
             };
+        }
+
+        public User Register(UserRegisterModel registermodel)
+        {
+            return new User();
         }
 
         private User GetUser(string username, string password)
