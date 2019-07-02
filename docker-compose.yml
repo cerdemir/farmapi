@@ -16,6 +16,7 @@ services:
       - "8000:80"
     environment:
       CONNECTION_STRING: "host=db;port=5432;database=store;username=apiuser;password=apipass"
+      SECRET_KEY: "very_secret_and_secure_key"
     networks:
       - farmapi-net
 
