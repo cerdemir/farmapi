@@ -76,9 +76,15 @@ namespace farmapi
         {
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
+            using(var sScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = sScope.ServiceProvider.GetRequiredService<Context.FarmApiContext>();
+                context.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
-                // app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
