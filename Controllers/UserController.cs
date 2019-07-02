@@ -21,7 +21,7 @@ namespace farmapi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserAuthenticationModel usermodel)
+        public IActionResult Authenticate([FromBody] UserAuthModel usermodel)
         {
             var user = _userService.Authenticate(usermodel.Username, usermodel.Password);
 
