@@ -11,10 +11,10 @@ namespace farmapi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : BaseApiController
+    public class UserController : BaseApiController
     {
         private IUserService _userService;
-        public UsersController(IUserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -23,18 +23,28 @@ namespace farmapi.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] UserAuthModel usermodel)
         {
-            var user = _userService.Authenticate(usermodel.Username, usermodel.Password);
+            var authResult = _userService.Authenticate(usermodel.Username, usermodel.Password);
 
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            if (!authResult.Authenticated)
+            {
+                return BadRequest(authResult);
+            }
 
-            return Ok(user);
+            return Ok(authResult);
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public IActionResult RegisterUser([FromBody] UserRegisterModel registermodel)
         {
-            return new string[] { "value1", "value2" };
+            var user = _userService.Register(registermodel);
+
+            if (user == null)
+            {
+                return BadRequest(new ApiResponseModel<Entities.User> { Success = false });
+            }
+
+            return Ok(new ApiResponseModel<Entities.User> { Data = user });
         }
     }
 }
