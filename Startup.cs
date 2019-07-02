@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace farmapi
 {
@@ -50,8 +51,45 @@ namespace farmapi
 
             ConfigureJWT(services);
 
+            ConfigureSwagger(services);
+
             services.AddScoped<Services.IUserService, Services.UserService>();
             services.AddScoped<Services.IProductService, Services.ProductService>();
+        }
+
+        private void ConfigureSwagger(IServiceCollection services)
+        {
+            var apiDescription = Swagger.DescriptionLoader.LoadApiDescription();
+            services.AddMemoryCache();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+                {
+                    Version = "v1",
+                        Title = "farma API",
+                        Description = apiDescription
+                });
+                //c.DocumentFilter<Swagger.SwaggerFilter>();
+                //c.OperationFilter<Swagger.ConsumesFilter>();
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                { { "Bearer", new string[] { } }
+                });
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Description = "Authorization header using the Bearer scheme.",
+                        Name = "Authorization",
+                        In = "header",
+                        Type = "apiKey",
+                });
+
+                var basePath = AppContext.BaseDirectory;;
+                var xmlPath = System.IO.Path.Combine(basePath, "farmapi.xml");
+                if (System.IO.File.Exists(xmlPath))
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+            });
         }
 
         private void ConfigureJWT(IServiceCollection services)
@@ -100,6 +138,12 @@ namespace farmapi
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "farma API");
+                });
+
             app.UseAuthentication();
             app.UseMvc();
         }
