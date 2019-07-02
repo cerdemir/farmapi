@@ -31,15 +31,25 @@ namespace farmapi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            var connectionString = Environment.GetEnvironmentVariable("STORE_DB_CONNECTION_STRING") ??
+                Configuration.GetConnectionString("STORE_DB_CONNECTION_STRING");
 
             services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<Context.FarmApiContext>(opt => opt.UseNpgsql(connectionString));
 
-            // configure jwt
-            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY");
+            ConfigureJWT(services);
+
+            services.AddScoped<Services.IUserService, Services.UserService>();
+            services.AddScoped<Services.IProductService, Services.ProductService>();
+        }
+
+        private void ConfigureJWT(IServiceCollection services)
+        {
+            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ??
+                Configuration.GetConnectionString("SECRET_KEY");
             var key = Encoding.ASCII.GetBytes(secretKey);
+
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,9 +67,6 @@ namespace farmapi
                         ValidateAudience = false
                     };
                 });
-
-            services.AddScoped<Services.IUserService, Services.UserService>();
-            services.AddScoped<Services.IProductService, Services.ProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

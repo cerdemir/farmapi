@@ -6,6 +6,7 @@ using System.Text;
 using farmapi.Context;
 using farmapi.Entities;
 using farmapi.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace farmapi.Services
@@ -13,10 +14,12 @@ namespace farmapi.Services
     public class UserService : IUserService
     {
         private FarmApiContext _context;
+        private IConfiguration _configuration;
 
-        public UserService(FarmApiContext context)
+        public UserService(FarmApiContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
         public AuthResultModel Authenticate(string username, string password)
         {
@@ -26,7 +29,7 @@ namespace farmapi.Services
                 return new AuthResultModel { Authenticated = false };
             }
             var tokenHandler = new JwtSecurityTokenHandler();
-            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY");
+            var secretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? _configuration.GetConnectionString("SECRET_KEY");;
             var key = Encoding.ASCII.GetBytes(secretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
