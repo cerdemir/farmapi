@@ -10,24 +10,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace farmapi.Controllers
 {
+    /// <summary>
+    /// Product listing
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ProductController : BaseApiController
+    public class ProductsController : BaseApiController
     {
-        private readonly int _userId;
+
         private readonly IProductService _productService;
 
-        public ProductController(IProductService productService)
+        public ProductsController(IProductService productService)
         {
-            _userId = GetUserId();
             _productService = productService;
         }
 
+        /// <summary>
+        /// Products belongs to other users
+        /// </summary>
+        /// <returns>List of product</returns>
         [HttpGet]
         public ActionResult<ApiResponseModel<List<Product>>> Get()
         {
-            var products = _productService.GetOtherUserProducts(_userId);
+            var products = _productService.GetOtherUserProducts(GetUserId());
             return Ok(new ApiResponseModel<List<Product>> { Data = products });
         }
     }

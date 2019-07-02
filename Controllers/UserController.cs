@@ -18,9 +18,13 @@ namespace farmapi.Controllers
         {
             _userService = userService;
         }
+        /// <summary>
+        /// Authenticates user 
+        /// </summary>
+        /// <param name="usermodel">user credentials</param>
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("Authenticate")]
         public ActionResult<ApiResponseModel<UserAuthResultModel>> Authenticate([FromBody] UserAuthModel usermodel)
         {
             var authResult = _userService.Authenticate(usermodel.Username, usermodel.Password);
@@ -32,9 +36,12 @@ namespace farmapi.Controllers
 
             return Ok(new ApiResponseModel<UserAuthResultModel> { Data = authResult });
         }
-
+        /// <summary>
+        /// Register user 
+        /// </summary>
+        /// <param name="registermodel">User registeration details</param>
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public ActionResult<ApiResponseModel<Entities.User>> RegisterUser([FromBody] UserRegisterModel registermodel)
         {
             var user = _userService.Register(registermodel);
