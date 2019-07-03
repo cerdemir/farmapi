@@ -42,16 +42,16 @@ namespace farmapi.Controllers
         /// <param name="registermodel">User registeration details</param>
         [AllowAnonymous]
         [HttpPost("Register")]
-        public ActionResult<ApiResponseModel<Entities.User>> RegisterUser([FromBody] UserRegisterModel registermodel)
+        public ActionResult<ApiResponseModel> RegisterUser([FromBody] UserRegisterModel registermodel)
         {
             var user = _userService.Register(registermodel);
 
             if (user == null)
             {
-                return BadRequest(new ApiResponseModel<Entities.User> { Success = false });
+                return BadRequest(new ApiResponseModel { Success = false });
             }
 
-            return Ok(new ApiResponseModel<Entities.User> { Data = user });
+            return Ok(new ApiResponseModel());
         }
     }
 }
