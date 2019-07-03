@@ -69,8 +69,6 @@ namespace farmapi
                         Title = "farma API",
                         Description = apiDescription
                 });
-                //c.DocumentFilter<Swagger.SwaggerFilter>();
-                //c.OperationFilter<Swagger.ConsumesFilter>();
                 c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
                 { { "Bearer", new string[] { } }
                 });
