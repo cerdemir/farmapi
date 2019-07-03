@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using farmapi.Context;
 using farmapi.Entities;
@@ -53,20 +54,55 @@ namespace farmapi.Services
 
         public User Register(UserRegisterModel registermodel)
         {
+            var salt = CreateRandomSalt();
+            var hashedPassword = CreateHash(salt, registermodel.Password);
             var user = new User()
             {
                 Name = registermodel.Name,
                 Username = registermodel.Username,
-                Password = registermodel.Password
+                Password = hashedPassword,
+                Salt = salt
             };
             _context.Users.Add(user);
             _context.SaveChanges();
             return user;
         }
 
+        private string CreateHash(string salt, string password)
+        {
+            var byteSalt = Convert.FromBase64String(salt);
+            var hasher = new Rfc2898DeriveBytes(password, byteSalt, 1000);
+            var ret = hasher.GetBytes(20);
+            return Convert.ToBase64String(ret);
+        }
+
+        private string CreateRandomSalt()
+        {
+            var saltGeneraqtor = new RNGCryptoServiceProvider();
+            var salt = new byte[16];
+            saltGeneraqtor.GetBytes(salt);
+            return Convert.ToBase64String(salt);
+        }
         private User GetUser(string username, string password)
         {
-            return _context.Users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            var user = _context.Users.SingleOrDefault(x => x.Username == username);
+            var hashedPassword = CreateHash(user.Salt, password);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var isPassOK = hashedPassword == user.Password;
+
+            if (isPassOK)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
+
         }
     }
 }
